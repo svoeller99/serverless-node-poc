@@ -7,7 +7,7 @@ To deploy:
 - setup AWS creds - see [this](https://serverless.com/framework/docs/providers/aws/guide/credentials/)
 - `serverless deploy`
 
-To test endpoints:
+To test endpoints (replace `<somewhere>` with your API Gateway resource identifier - `serverless deploy` should spit this out at the command line):
 
 - POST - `curl -X POST -H "Content-Type: application/json" -d '{
     "email": "blah@blah.com",
