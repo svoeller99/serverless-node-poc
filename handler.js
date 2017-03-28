@@ -28,7 +28,7 @@ module.exports.hello = (event, context, callback) => {
       }
 
       callback(null, {
-        statusCode: 201,
+        statusCode: method == 'POST' ? 201 : 200,
         body: JSON.stringify(user)
       });
     });
