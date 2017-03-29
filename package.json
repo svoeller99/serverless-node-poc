@@ -1,0 +1,9 @@
+{
+  "name": "serverless-node-poc",
+  "version": "1.0.0",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dynamodb-marshaler": "^2.0.0"
+  }
+}

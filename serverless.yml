@@ -2,6 +2,10 @@ service: aws-nodejs # NOTE: update this with your service name
 provider:
   name: aws
   runtime: nodejs6.10
+package:
+  include:
+    - node_modules/**
+    - handler.js
 functions:
   get:
     handler: handler.get
@@ -39,6 +43,13 @@ functions:
             parameters:
               paths:
                 email: true
+  userSnapshot:
+    handler: handler.userSnapshot
+    events:
+      - stream:
+          type: dynamodb
+          arn: arn:aws:dynamodb:us-east-1:347401135326:table/usersTable/stream/2017-03-29T17:10:16.554
+          # arn: "arn:aws:dynamodb:${opt:region, self:provider.region}:347401135326:table/usersTable/stream/1901T00:00:00.000"
 resources:
   Resources:
     usersTable:
@@ -54,6 +65,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
     DynamoDBIamPolicy:
       Type: AWS::IAM::Policy
       DependsOn: usersTable
@@ -95,3 +108,6 @@ resources:
               - arn:aws:s3:::*
         Roles:
           - Ref: IamRoleLambdaExecution
+# custom:
+#     accountId: !Ref AWS::AccountId
+#     region: !Ref AWS::Region

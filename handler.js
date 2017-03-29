@@ -1,6 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const unmarshalDynamoItem = require('dynamodb-marshaler').unmarshalItem;
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const s3 = new AWS.S3();
 
@@ -83,8 +84,6 @@ module.exports.post = (event, context, callback) => {
         return internalServerError(err, callback);
       }
 
-      writeUserSnapshot(user);
-
       created(user, callback);
     } catch (e) {
       internalServerError(e, callback);
@@ -105,8 +104,6 @@ module.exports.put = (event, context, callback) => {
       if (err) {
         return internalServerError(err, callback);
       }
-
-      writeUserSnapshot(user);
 
       ok(user, callback);
     } catch (e) {
@@ -133,5 +130,13 @@ module.exports.delete = (event, context, callback) => {
     } catch (e) {
       internalServerError(e, callback);
     }
+  });
+};
+
+module.exports.userSnapshot = (event, context, callback) => {
+  event.Records.forEach((record) => {
+    const user = unmarshalDynamoItem(record.dynamodb.NewImage);
+    console.log('writing user snapshot to S3', user);
+    writeUserSnapshot(user);
   });
 };
